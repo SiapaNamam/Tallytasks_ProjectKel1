@@ -3,9 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tally_task/login.dart';
 import 'package:firedart/firedart.dart';
 import 'package:tally_task/views/home.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 
-const apiKey = '"AIzaSyB4o2uNst0-JNnkaiuRkGr6iZHS2K8iyq4"';
-const projectId = 'tally-d39ef';
+const apiKey = 'AIzaSyAzJAwV4PEbtxKMBBg0uOCSqf6G7rPJ4-4';
+const projectId = 'talllytask';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,17 +15,21 @@ void main(List<String> args) async {
 
   if (username != null) {
     runApp(HomePage());
-  }
-  else{
+  } else {
     runApp(DaftarPage());
   }
 
   Firestore.initialize(projectId);
 }
 
-class DaftarPage extends StatelessWidget {
+class DaftarPage extends StatefulWidget {
   DaftarPage({super.key});
 
+  @override
+  State<DaftarPage> createState() => _DaftarPageState();
+}
+
+class _DaftarPageState extends State<DaftarPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -86,27 +91,26 @@ class _MyFormPageState extends State<MyFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Row(
         children: [
           Expanded(
             child: Container(
               color: Color.fromARGB(80, 96, 150, 180),
-              height: 2500,
+              height: height,
               child: Container(
-                margin: EdgeInsets.all(60),
-                padding: EdgeInsets.all(60),
+                padding: EdgeInsets.only(left: height / 20,right: height/20),
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: height / 5),
                     const Text(
                       "Daftar",
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: height / 30),
                     Container(
                       height: 50.0,
                       decoration: BoxDecoration(
@@ -129,7 +133,7 @@ class _MyFormPageState extends State<MyFormPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: height / 20),
                     Container(
                       height: 50.0,
                       decoration: BoxDecoration(
@@ -153,7 +157,7 @@ class _MyFormPageState extends State<MyFormPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: height / 20),
                     Container(
                       height: 50.0,
                       decoration: BoxDecoration(
@@ -177,7 +181,7 @@ class _MyFormPageState extends State<MyFormPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: height / 20),
                     Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

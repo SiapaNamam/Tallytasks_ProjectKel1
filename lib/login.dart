@@ -4,8 +4,8 @@ import 'package:tally_task/views/home.dart';
 import 'main.dart';
 import 'package:firedart/firedart.dart';
 
-const apiKey = '"AIzaSyB4o2uNst0-JNnkaiuRkGr6iZHS2K8iyq4"';
-const projectId = 'tally-d39ef';
+const apiKey = 'AIzaSyAzJAwV4PEbtxKMBBg0uOCSqf6G7rPJ4-4';
+const projectId = 'talllytask';
 
 void main(List<String> args) {
   Firestore.initialize(projectId);
@@ -73,6 +73,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -81,26 +83,25 @@ class _MyAppState extends State<MyApp> {
           Expanded(
               child: Container(
             child: Image.asset('assets/images/login.png'),
-            height: 2500,
+            height: height,
             color: Colors.white,
           )),
           Expanded(
               child: Container(
             color: Color.fromARGB(80, 96, 150, 180),
-            height: 2500,
+            height: height,
             child: Container(
-              margin: EdgeInsets.all(60),
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(left: height / 20,right: height/20),
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 30,
+                  SizedBox(
+                    height: height / 5,
                   ),
                   const Text(
                     "Masuk",
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
                   ),
-                  const SizedBox(height: 70),
+                  SizedBox(height: height / 15),
                   Container(
                     height: 50.0,
                     decoration: BoxDecoration(
@@ -122,7 +123,7 @@ class _MyAppState extends State<MyApp> {
                               fontSize: 20)),
                     ),
                   ),
-                  const SizedBox(height: 70),
+                  SizedBox(height: height / 15),
                   Container(
                     height: 50.0,
                     decoration: BoxDecoration(
@@ -145,7 +146,7 @@ class _MyAppState extends State<MyApp> {
                               fontSize: 20)),
                     ),
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: height / 15),
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -204,32 +205,6 @@ class _MyAppState extends State<MyApp> {
                   ),
                   SizedBox(
                     height: 10,
-                  ),
-                  const Text(
-                    "Atau Login Dengan",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(16),
-                      child: Ink(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 70.0, vertical: 18.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.0),
-                          color: Colors.blueGrey,
-                        ),
-                        child: const Text(
-                          "Google",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
                   ),
                   if (_errorText != null)
                     Text(

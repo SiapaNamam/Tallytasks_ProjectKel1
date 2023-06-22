@@ -1,3 +1,4 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,8 +10,8 @@ import 'components/notes.dart';
 import 'dart:core';
 import 'package:firedart/firedart.dart';
 
-const apiKey = '"AIzaSyB4o2uNst0-JNnkaiuRkGr6iZHS2K8iyq4"';
-const projectId = 'tally-d39ef';
+const apiKey = 'AIzaSyAzJAwV4PEbtxKMBBg0uOCSqf6G7rPJ4-4';
+const projectId = 'talllytask';
 
 void main(List<String> args) {
   Firestore.initialize(projectId);
@@ -45,6 +46,7 @@ class _HomeState extends State<Home> {
   bool isVisibelForm = false;
   List<Widget> notesChildren = [];
   List<Widget> todoChildren = [];
+  List<Widget> searchResults = [];
   TextEditingController _titleNotes = TextEditingController();
   TextEditingController _descriptionNotes = TextEditingController();
   TextEditingController _dateNotes = TextEditingController();
@@ -58,6 +60,7 @@ class _HomeState extends State<Home> {
     getNotesByUsername(5000, 1280);
     getTodo(800, 600);
     sendNotifikasi();
+    sendHistory();
   }
 
   Future<void> sendNotifikasi() async {
@@ -81,7 +84,8 @@ class _HomeState extends State<Home> {
 
     final notifikasiCollection = Firestore.instance.collection('notifikasi');
     final queryNotifikasi = await notifikasiCollection
-        .where('tanggal', isEqualTo: notifikasiData['tanggal']).where('username',isEqualTo: storedUsername)
+        .where('tanggal', isEqualTo: notifikasiData['tanggal'])
+        .where('username', isEqualTo: storedUsername)
         .get();
     if (queryNotifikasi.toString() == "[]") {
       final newNotifikasi = await notifikasiCollection.add(notifikasiData);
@@ -133,12 +137,14 @@ class _HomeState extends State<Home> {
       if (tanggal == tanggalTodo) {
         setState(() {
           newTodo.add(CheckBoxTask(
-              title: title,
-              description: deskripsi,
-              width: width,
-              height: height,
-              color: color,
-              value: value));
+            title: title,
+            description: deskripsi,
+            width: width,
+            height: height,
+            color: color,
+            value: value,
+            tipe: tipe,
+          ));
         });
       }
 
@@ -192,6 +198,25 @@ class _HomeState extends State<Home> {
 
       setState(() {
         notesChildren = newNotesChildren;
+      });
+    }
+  }
+
+  void _performSearch(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        searchResults = todoChildren;
+      });
+    } else {
+      List<Widget> result = [];
+      for (var i = 0; i < todoChildren.length; i++) {
+        CheckBoxTask task = todoChildren[i] as CheckBoxTask;
+        if (task.title.toLowerCase().contains(query.toLowerCase())) {
+          result.add(task);
+        }
+      }
+      setState(() {
+        searchResults = result;
       });
     }
   }
@@ -267,10 +292,14 @@ class _HomeState extends State<Home> {
     Map<String, int> usernameCountMap = {};
     for (var document in querySnapshot) {
       String username = document['username'];
-      if (usernameCountMap.containsKey(username)) {
-        usernameCountMap[username] = usernameCountMap[username]! + 1;
-      } else {
-        usernameCountMap[username] = 1;
+      String tanggalTodo = document['tanggal'];
+      if (tanggalTodo.substring(0, 7) ==
+          (DateTime.now()).toString().substring(0, 7)) {
+        if (usernameCountMap.containsKey(username)) {
+          usernameCountMap[username] = usernameCountMap[username]! + 1;
+        } else {
+          usernameCountMap[username] = 1;
+        }
       }
     }
 
@@ -283,6 +312,55 @@ class _HomeState extends State<Home> {
     List<MapEntry<String, int>> topUsername = sortedUsername.take(10).toList();
 
     return topUsername;
+  }
+
+  Future<void> sendHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('username') ?? '';
+    final historyCollection = Firestore.instance.collection('history');
+
+    DateTime getLastDayOfMonth(int month) {
+      return DateTime(DateTime.now().year, month + 1, 0);
+    }
+
+    DateTime now = DateTime.now();
+    int currentMonth = now.month;
+    int currentYear = now.year;
+    int currentDay = now.day;
+    DateTime lastDay = getLastDayOfMonth(currentMonth);
+
+    //ambil peringkat
+    List<MapEntry<String, int>> leaderboard = await getLeaderboard();
+    int userRank = 0;
+    for (int i = 0; i < leaderboard.length; i++) {
+      if (leaderboard[i].key == username) {
+        userRank = i + 1;
+        break;
+      }
+    }
+    final historyData = {
+      'pesan':
+          "Pada bulan ${currentMonth} , tahun ${currentYear} kamu mendapat peringkat ${userRank}, tingkatkan!",
+      'username': username,
+      'tanggal': DateTime.now().toString().substring(0, 10)
+    };
+
+    final queryHistory = await historyCollection
+        .where('pesan',
+            isEqualTo:
+                "Pada bulan ${currentMonth} , tahun ${currentYear} kamu mendapat peringkat ${userRank}, tingkatkan!")
+        .where('username', isEqualTo: username)
+        .get();
+    print(queryHistory);
+    if (queryHistory.toString() == "[]") {
+      if (currentDay != lastDay) {
+        print("berhasil ngirim pas akhir bulan");
+        final newHistory = await historyCollection.add(historyData);
+      }
+    } else {
+      // print("diluar akhir bulan");
+      // final newHistory = await historyCollection.add(historyData);
+    }
   }
 
   @override
@@ -321,6 +399,9 @@ class _HomeState extends State<Home> {
                       color: Colors.black87.withOpacity(0.3),
                       fontSize: width / 60),
                 ),
+                onChanged: (value) {
+                  _performSearch(value);
+                },
               ),
             ),
 
@@ -364,9 +445,15 @@ class _HomeState extends State<Home> {
                           child: Container(
                             margin: EdgeInsets.all(width / 90),
                             child: ListView.builder(
-                              itemCount: todoChildren.length,
+                              itemCount: searchResults.isNotEmpty
+                                  ? searchResults.length
+                                  : todoChildren.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return todoChildren[index];
+                                if (searchResults.isNotEmpty) {
+                                  return searchResults[index];
+                                } else {
+                                  return todoChildren[index];
+                                }
                               },
                             ),
                           ))
@@ -886,12 +973,14 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       Container(
-                        height: height / 9,
+                        height: height / 1.8,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white),
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                        ),
                         child: TextFormField(
                           controller: _descriptionNotes,
+                          maxLines: null,
                           style: const TextStyle(
                               fontWeight: FontWeight.w300,
                               color: Colors.black,
@@ -907,7 +996,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       SizedBox(
-                        height: height / 2.3,
+                        height: height / 40,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

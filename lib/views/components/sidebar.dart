@@ -1,5 +1,7 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tally_task/views/historyPage.dart';
 import 'package:tally_task/views/home.dart';
 import '../../login.dart';
 import '../notifikasi.dart';
@@ -32,9 +34,12 @@ class _SidebarState extends State<SidebarWidget> {
       home: Scaffold(
         backgroundColor: Color.fromARGB(255, 128, 171, 195),
         body: Container(
-          margin: EdgeInsets.only(top: height / 20, left: height / 40),
+          margin: EdgeInsets.only(top: height / 10, left: height / 40),
           child: Column(
             children: [
+              SizedBox(
+                height: height / 16,
+              ),
               InkWell(
                 onTap: () {
                   Navigator.pushReplacement(context,
@@ -110,10 +115,10 @@ class _SidebarState extends State<SidebarWidget> {
               ),
               InkWell(
                 onTap: () {
-                  // Navigator.pushReplacement(context,
-                  //     MaterialPageRoute(builder: (context) {
-                  //   return const NotifikasiPage();
-                  // }));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) {
+                    return const HistoryPage();
+                  }));
                 },
                 child: Row(
                   children: [
@@ -126,7 +131,7 @@ class _SidebarState extends State<SidebarWidget> {
                 ),
               ),
               SizedBox(
-                height: height / 6,
+                height: height / 10,
               ),
               InkWell(
                 onTap: () async {

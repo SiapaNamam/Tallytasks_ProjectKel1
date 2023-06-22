@@ -38,7 +38,7 @@ class _SocialState extends State<Social> {
   void initState() {
     super.initState();
     getUsername();
-    getValueForNotifikation(1500, 600);
+    getValueForPost(1500, 600);
   }
 
   Future<void> sendPost() async {
@@ -60,37 +60,86 @@ class _SocialState extends State<Social> {
     print("berhasil kirim data");
   }
 
-  Future<void> getValueForNotifikation(double width, double height) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedUsername = prefs.getString('username');
-    final notifikasiCollection = Firestore.instance.collection('notifikasi');
-    List<Widget> notifikationData = [];
+  
+Future<void> getValueForPost(double width, double height) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? storedUsername = prefs.getString('username');
+  final notifikasiCollection = Firestore.instance.collection('postingan');
+  List<Widget> notifikationData = [];
 
-    final querySnapshot = await notifikasiCollection
-        .where('username', isEqualTo: storedUsername)
-        .get();
+  final querySnapshot = await notifikasiCollection.get();
 
-    for (var i = 0; i < querySnapshot.length; i++) {
-      String isiNotifikasi = querySnapshot[i].map['isi'];
-      notifikationData.add(Column(
-        children: [
-          SizedBox(
-            width: width / 100,
+  for (var i = 0; i < querySnapshot.length; i++) {
+    String isiPostingan = querySnapshot[i].map['description'];
+    String judulPostingan = querySnapshot[i].map['title'];
+
+    // Menghitung jumlah baris teks pada judulPostingan
+    final titleTextSpan = TextSpan(
+      text: judulPostingan,
+      style: TextStyle(fontSize: width / 45, fontWeight: FontWeight.w700),
+    );
+    final titleTextPainter = TextPainter(
+      text: titleTextSpan,
+      textDirection: TextDirection.ltr,
+      maxLines: 2, // Jumlah maksimum baris yang ingin ditampilkan
+    );
+    titleTextPainter.layout(maxWidth: width / 1.8);
+    final titleLineCount = titleTextPainter.computeLineMetrics().length;
+
+    // Menghitung jumlah baris teks pada querySnapshot[i].map['username']
+    final usernameTextSpan = TextSpan(
+      text: querySnapshot[i].map['username'],
+      style: TextStyle(fontSize: width / 100, fontWeight: FontWeight.w700),
+    );
+    final usernameTextPainter = TextPainter(
+      text: usernameTextSpan,
+      textDirection: TextDirection.ltr,
+      maxLines: 1, // Jumlah maksimum baris yang ingin ditampilkan
+    );
+    usernameTextPainter.layout(maxWidth: width / 1.8);
+    final usernameLineCount = usernameTextPainter.computeLineMetrics().length;
+
+    // Menghitung jumlah baris teks pada isiPostingan
+    final descriptionTextSpan = TextSpan(
+      text: isiPostingan,
+      style: TextStyle(fontSize: width / 60),
+    );
+    final descriptionTextPainter = TextPainter(
+      text: descriptionTextSpan,
+      textDirection: TextDirection.ltr,
+      maxLines: 3, // Jumlah maksimum baris yang ingin ditampilkan
+    );
+    descriptionTextPainter.layout(maxWidth: width / 1.8);
+    final descriptionLineCount =
+        descriptionTextPainter.computeLineMetrics().length;
+
+    notifikationData.add(Column(
+      children: [
+        SizedBox(
+          width: width / 100,
+          height: height / 40,
+        ),
+        Container(
+          width: width / 1.35,
+          height: (height / 6) +
+              (titleLineCount * titleTextPainter.preferredLineHeight) +
+              (usernameLineCount * usernameTextPainter.preferredLineHeight) +
+              (descriptionLineCount *
+                  descriptionTextPainter.preferredLineHeight),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              width: 0.5,
+              color: Colors.black.withOpacity(0.5),
+            ),
           ),
-          Container(
-              width: width / 1.35,
-              height: height / 6,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  width: 0.5,
-                  color: Colors.black.withOpacity(0.5),
-                ),
-              ),
-              child: Row(children: [
-                Icon(Icons.notifications_active, size: width / 25),
-                Container(
+          child: Row(
+            children: [
+              Icon(Icons.account_circle_sharp, size: width / 25),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -98,7 +147,7 @@ class _SocialState extends State<Social> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Jumlah Tugas",
+                            judulPostingan,
                             style: TextStyle(
                                 fontSize: width / 45,
                                 fontWeight: FontWeight.w700),
@@ -106,29 +155,32 @@ class _SocialState extends State<Social> {
                           Text(
                             querySnapshot[i].map['username'],
                             style: TextStyle(
-                                fontSize: width / 45,
+                                fontSize: width / 100,
                                 fontWeight: FontWeight.w700),
                           ),
                         ],
                       ),
                       Text(
-                        isiNotifikasi,
+                        isiPostingan,
                         style: TextStyle(
                           fontSize: width / 60,
                         ),
                       ),
                     ],
                   ),
-                )
-              ])),
-        ],
-      ));
-    }
-
-    setState(() {
-      notifikationChildren = notifikationData;
-    });
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ));
   }
+
+  setState(() {
+    notifikationChildren = notifikationData;
+  });
+}
 
   Future<void> getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -149,18 +201,6 @@ class _SocialState extends State<Social> {
           children: [
             Start(),
 
-            Container(
-              width: width / 1.34,
-              height: height / 1.35,
-              margin: EdgeInsets.only(left: width / 4.6, top: height / 5),
-              child: ListView.builder(
-                itemCount: notifikationChildren.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return notifikationChildren[index];
-                },
-              ),
-            ),
-
             //add button
             Container(
               margin: EdgeInsets.only(top: height / 10, left: width / 5),
@@ -176,6 +216,30 @@ class _SocialState extends State<Social> {
                   color: Color.fromARGB(255, 158, 158, 158),
                   size: height / 13,
                 ),
+              ),
+            ),
+
+            //Gambar User
+            Container(
+              margin: EdgeInsets.only(left: width / 1.11, top: height / 11),
+              child: Row(children: [
+                Icon(Icons.rocket),
+                Text(
+                  username,
+                  style: TextStyle(fontSize: width / 60),
+                )
+              ]),
+            ),
+
+            Container(
+              width: width / 1.34,
+              height: height / 1.35,
+              margin: EdgeInsets.only(left: width / 4.6, top: height / 5),
+              child: ListView.builder(
+                itemCount: notifikationChildren.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return notifikationChildren[index];
+                },
               ),
             ),
 
@@ -213,7 +277,6 @@ class _SocialState extends State<Social> {
                                   fontSize: width / 30),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  contentPadding: EdgeInsets.only(left: 20),
                                   hintText: 'Enter Post Title',
                                   hintStyle: TextStyle(
                                       fontWeight: FontWeight.w900,
@@ -224,11 +287,12 @@ class _SocialState extends State<Social> {
                         ],
                       ),
                       Container(
-                        height: height / 9,
+                        height: height / 3,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white),
                         child: TextFormField(
+                          maxLines: null,
                           controller: _descriptionPost,
                           style: const TextStyle(
                               fontWeight: FontWeight.w300,
@@ -245,7 +309,7 @@ class _SocialState extends State<Social> {
                         ),
                       ),
                       SizedBox(
-                        height: height / 2.3,
+                        height: height / 4,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -256,7 +320,7 @@ class _SocialState extends State<Social> {
                                   isVisibelForm = !isVisibelForm;
                                 });
                                 await sendPost();
-                                await getValueForNotifikation(1500, 600);
+                                await getValueForPost(1500, 600);
                               },
                               child: Text("Simpan")),
                           ElevatedButton(
@@ -273,23 +337,11 @@ class _SocialState extends State<Social> {
                             ),
                           )
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
-            ),
-
-            //Gambar User
-            Container(
-              margin: EdgeInsets.only(left: width / 1.11, top: height / 11),
-              child: Row(children: [
-                Icon(Icons.rocket),
-                Text(
-                  username,
-                  style: TextStyle(fontSize: width / 60),
-                )
-              ]),
             ),
           ],
         ),

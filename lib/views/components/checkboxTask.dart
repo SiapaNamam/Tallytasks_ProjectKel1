@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firedart/firedart.dart';
+import 'package:tally_task/views/detailTodo.dart';
 
-const apiKey = '"AIzaSyB4o2uNst0-JNnkaiuRkGr6iZHS2K8iyq4"';
-const projectId = 'tally-d39ef';
+const apiKey = 'AIzaSyAzJAwV4PEbtxKMBBg0uOCSqf6G7rPJ4-4';
+const projectId = 'talllytask';
 
 class CheckBoxTask extends StatefulWidget {
   final String title;
@@ -12,14 +13,17 @@ class CheckBoxTask extends StatefulWidget {
   final double height;
   final List<int> color;
   final String value;
+  final String tipe;
 
-  const CheckBoxTask(
-      {required this.title,
-      required this.description,
-      required this.width,
-      required this.height,
-      required this.color,
-      required this.value});
+  const CheckBoxTask({
+    required this.title,
+    required this.description,
+    required this.width,
+    required this.height,
+    required this.color,
+    required this.value,
+    required this.tipe
+  });
 
   @override
   State<CheckBoxTask> createState() => _CheckBoxTaskState();
@@ -73,48 +77,60 @@ class _CheckBoxTaskState extends State<CheckBoxTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: widget.width / 150,
-                height: widget.height / 15,
-                decoration: BoxDecoration(
-                    color: Color.fromARGB(255, widget.color[1], widget.color[2],
-                        widget.color[3])),
-              ),
-              SizedBox(
-                width: widget.width / 150,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    widget.title,
-                    style: TextStyle(
-                        fontSize: widget.width / 25,
-                        color: Color.fromARGB(255, widget.color[1],
-                            widget.color[2], widget.color[3]),
-                        fontWeight: FontWeight.w700),
-                  ),
-                  Text(widget.description)
-                ],
-              ),
-            ],
-          ),
-          Checkbox(
-              value: _valueBox,
-              onChanged: (newValue) {
-                setState(() {
-                  toggleCheckboxValue();
-                });
-                ;
-              })
-        ],
+    return InkWell(
+      onTap: () {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return DetailTodo(
+            title: widget.title,
+            deskripsi: widget.description,
+            tipe: widget.tipe,
+          );
+        }));
+      },
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: widget.width / 150,
+                  height: widget.height / 15,
+                  decoration: BoxDecoration(
+                      color: Color.fromARGB(255, widget.color[1],
+                          widget.color[2], widget.color[3])),
+                ),
+                SizedBox(
+                  width: widget.width / 150,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      widget.title.length > 10 ? widget.title.substring(0,10) + '...' : widget.title,
+                      style: TextStyle(
+                          fontSize: widget.width / 25,
+                          color: Color.fromARGB(255, widget.color[1],
+                              widget.color[2], widget.color[3]),
+                          fontWeight: FontWeight.w700),
+                    ),
+                    Text(widget.description.length > 10 ? widget.description.substring(0,10) + '...' : widget.description)
+                  ],
+                ),
+              ],
+            ),
+            Checkbox(
+                value: _valueBox,
+                onChanged: (newValue) {
+                  setState(() {
+                    toggleCheckboxValue();
+                  });
+                  ;
+                })
+          ],
+        ),
       ),
     );
   }

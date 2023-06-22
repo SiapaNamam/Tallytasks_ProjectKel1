@@ -44,10 +44,11 @@ class _FormTodoState extends State<FormTodo> {
               ),
             ),
             Container(
-              height: height / 9,
+              height: height / 1.8,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20), color: Colors.white),
               child: TextFormField(
+                maxLines: null,
                 style: const TextStyle(
                     fontWeight: FontWeight.w300,
                     color: Colors.black,
@@ -63,7 +64,7 @@ class _FormTodoState extends State<FormTodo> {
               ),
             ),
             SizedBox(
-              height: height / 2.3,
+              height: height / 40,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

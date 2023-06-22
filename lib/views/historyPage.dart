@@ -4,44 +4,44 @@ import 'package:tally_task/views/isiNotifikasi.dart';
 import 'components/start.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NotifikasiPage extends StatefulWidget {
-  const NotifikasiPage({super.key});
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
 
   @override
-  State<NotifikasiPage> createState() => _NotifikasiPageState();
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _NotifikasiPageState extends State<NotifikasiPage> {
+class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Notifikasi(),
+      home: History(),
     );
   }
 }
 
-class Notifikasi extends StatefulWidget {
-  const Notifikasi({super.key});
+class History extends StatefulWidget {
+  const History({super.key});
 
   @override
-  State<Notifikasi> createState() => _NotifikasiState();
+  State<History> createState() => _HistoryState();
 }
 
-class _NotifikasiState extends State<Notifikasi> {
+class _HistoryState extends State<History> {
   String username = '';
   List<Widget> notifikationChildren = [];
 
   void initState() {
     super.initState();
     getUsername();
-    getValueForNotifikation(1500, 600);
+    getValueForHistory(1500, 600);
   }
 
-  Future<void> getValueForNotifikation(double width, double height) async {
+  Future<void> getValueForHistory(double width, double height) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedUsername = prefs.getString('username');
-    final notifikasiCollection = Firestore.instance.collection('notifikasi');
+    final notifikasiCollection = Firestore.instance.collection('history');
     List<Widget> notifikationData = [];
 
     final querySnapshot = await notifikasiCollection
@@ -49,7 +49,7 @@ class _NotifikasiState extends State<Notifikasi> {
         .get();
 
     for (var i = 0; i < querySnapshot.length; i++) {
-      String isiNotifikasi = querySnapshot[i].map['isi'];
+      String isiNotifikasi = querySnapshot[i].map['pesan'];
       notifikationData.add(Column(
         children: [
           SizedBox(
@@ -81,7 +81,7 @@ class _NotifikasiState extends State<Notifikasi> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Jumlah Tugas",
+                          "Peringkat",
                           style: TextStyle(
                               fontSize: width / 45, fontWeight: FontWeight.w700),
                         ),

@@ -4,8 +4,8 @@ import 'package:tally_task/views/components/start.dart';
 import 'components/checkboxTask.dart';
 import 'package:firedart/firedart.dart';
 
-const apiKey = '"AIzaSyB4o2uNst0-JNnkaiuRkGr6iZHS2K8iyq4"';
-const projectId = 'tally-d39ef';
+const apiKey = 'AIzaSyAzJAwV4PEbtxKMBBg0uOCSqf6G7rPJ4-4';
+const projectId = 'talllytask';
 
 class Todo extends StatefulWidget {
   final String tanggal;
@@ -88,39 +88,48 @@ class _TodoState extends State<Todo> {
             height: height,
             color: [255, 128, 171, 195],
             value: value,
+            tipe: tipe,
           ));
         } else if (tipe == "Penting") {
           newTodop.add(CheckBoxTask(
-              title: title,
-              description: deskripsi,
-              width: width,
-              height: height,
-              color: [255, 154, 180, 204],
-              value: value));
+            title: title,
+            description: deskripsi,
+            width: width,
+            height: height,
+            color: [255, 154, 180, 204],
+            value: value,
+            tipe: tipe,
+          ));
         } else if (tipe == "Tidak Penting") {
           newTodotp.add(CheckBoxTask(
-              title: title,
-              description: deskripsi,
-              width: width,
-              height: height,
-              color: [255, 210, 206, 223],
-              value: value));
+            title: title,
+            description: deskripsi,
+            width: width,
+            height: height,
+            color: [255, 210, 206, 223],
+            value: value,
+            tipe: tipe,
+          ));
         } else if (tipe == "Sangat Tidak Penting") {
           newTodoStp.add(CheckBoxTask(
-              title: title,
-              description: deskripsi,
-              width: width,
-              height: height,
-              color: [255, 241, 215, 216],
-              value: value));
+            title: title,
+            description: deskripsi,
+            width: width,
+            height: height,
+            color: [255, 241, 215, 216],
+            value: value,
+            tipe: tipe,
+          ));
         } else if (tipe == "Belum Tau") {
           newTodoBt.add(CheckBoxTask(
-              title: title,
-              description: deskripsi,
-              width: width,
-              height: height,
-              color: [255, 21, 23, 42],
-              value: value));
+            title: title,
+            description: deskripsi,
+            width: width,
+            height: height,
+            color: [255, 21, 23, 42],
+            value: value,
+            tipe: tipe,
+          ));
         }
 
         setState(() {
@@ -532,11 +541,12 @@ class _TodoState extends State<Todo> {
                         ],
                       ),
                       Container(
-                        height: height / 9,
+                        height: height / 1.8,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white),
                         child: TextFormField(
+                          maxLines: null,
                           controller: _nilaiDeskripsiTodo,
                           style: const TextStyle(
                               fontWeight: FontWeight.w300,
@@ -553,7 +563,7 @@ class _TodoState extends State<Todo> {
                         ),
                       ),
                       SizedBox(
-                        height: height / 2.3,
+                        height: height / 40,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
