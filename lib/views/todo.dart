@@ -170,30 +170,30 @@ class _TodoState extends State<Todo> {
           children: [
             startPage,
             //search fill
-            Container(
-              height: height / 15,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(width / 10),
-              ),
-              width: width / 4,
-              margin: EdgeInsets.only(left: width / 4.6, top: height / 15),
-              child: TextFormField(
-                style: TextStyle(fontSize: width / 60),
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, size: width / 35),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(width / 10),
-                      borderSide: BorderSide(color: Colors.black)),
-                  contentPadding: EdgeInsets.all(width / 90),
-                  hintText: 'Search Task',
-                  hintStyle: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black87.withOpacity(0.3),
-                      fontSize: width / 60),
-                ),
-              ),
-            ),
+            // Container(
+            //   height: height / 15,
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(width / 10),
+            //   ),
+            //   width: width / 4,
+            //   margin: EdgeInsets.only(left: width / 4.6, top: height / 15),
+            //   child: TextFormField(
+            //     style: TextStyle(fontSize: width / 60),
+            //     decoration: InputDecoration(
+            //       prefixIcon: Icon(Icons.search, size: width / 35),
+            //       border: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(width / 10),
+            //           borderSide: BorderSide(color: Colors.black)),
+            //       contentPadding: EdgeInsets.all(width / 90),
+            //       hintText: 'Search Task',
+            //       hintStyle: TextStyle(
+            //           fontWeight: FontWeight.w400,
+            //           color: Colors.black87.withOpacity(0.3),
+            //           fontSize: width / 60),
+            //     ),
+            //   ),
+            // ),
 
             //Gambar User
             Container(
