@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tally_task/login.dart';
 import 'package:firedart/firedart.dart';
 import 'package:tally_task/views/home.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 const apiKey = 'AIzaSyAzJAwV4PEbtxKMBBg0uOCSqf6G7rPJ4-4';
 const projectId = 'talllytask';
@@ -101,7 +100,7 @@ class _MyFormPageState extends State<MyFormPage> {
               color: Color.fromARGB(80, 96, 150, 180),
               height: height,
               child: Container(
-                padding: EdgeInsets.only(left: height / 20,right: height/20),
+                padding: EdgeInsets.only(left: height / 20, right: height / 20),
                 child: Column(
                   children: [
                     SizedBox(height: height / 5),

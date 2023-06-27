@@ -70,14 +70,7 @@ class _NotifikasiState extends State<Notifikasi> {
               child: Row(children: [
                 Icon(Icons.notifications_active, size: width / 25),
                 Container(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const IsiNotifikasiPage();
-                      }));
-                    },
-                    child: Column(
+                  child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -94,7 +87,6 @@ class _NotifikasiState extends State<Notifikasi> {
                       ],
                     ),
                   ),
-                )
               ])),
         ],
       ));

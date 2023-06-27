@@ -70,31 +70,23 @@ class _HistoryState extends State<History> {
               child: Row(children: [
                 Icon(Icons.notifications_active, size: width / 25),
                 Container(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const IsiNotifikasiPage();
-                      }));
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Peringkat",
-                          style: TextStyle(
-                              fontSize: width / 45, fontWeight: FontWeight.w700),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Peringkat",
+                        style: TextStyle(
+                            fontSize: width / 45, fontWeight: FontWeight.w700),
+                      ),
+                      Text(
+                        isiNotifikasi,
+                        style: TextStyle(
+                          fontSize: width / 60,
                         ),
-                        Text(
-                          isiNotifikasi,
-                          style: TextStyle(
-                            fontSize: width / 60,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                )
+                ),
               ])),
         ],
       ));
@@ -104,8 +96,6 @@ class _HistoryState extends State<History> {
       notifikationChildren = notifikationData;
     });
   }
-
-  
 
   Future<void> getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
