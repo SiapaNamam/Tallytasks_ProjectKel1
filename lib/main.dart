@@ -52,39 +52,50 @@ class _MyFormPageState extends State<MyFormPage> {
   CollectionReference pengguna = Firestore.instance.collection("pengguna");
 
   Future<void> registerUser() async {
-    String email = _controllerEmail.text;
-    String password = _controllerPassword.text;
-    String confirmPassword = _controllerConfirmPassword.text;
+  String email = _controllerEmail.text;
+  String password = _controllerPassword.text;
+  String confirmPassword = _controllerConfirmPassword.text;
 
-    // kondisi password dan confirm password tidak sama
-    if (password != confirmPassword) {
-      setState(() {
-        _errorText = 'Password and confirm password tidak sama';
-      });
-      return;
-    }
-
-    // cek apakah username sudah ada atau belum
-    final usersCollection = Firestore.instance.collection('pengguna');
-    final querySnapshot =
-        await usersCollection.where('username', isEqualTo: email).get();
-
-    if (querySnapshot.isNotEmpty) {
-      setState(() {
-        _errorText = 'Username sudah ada';
-      });
-      return;
-    }
-
-    // Add user data to Firestore
-    final userData = {'username': email, 'password': password};
-    final newUserDocument = await usersCollection.add(userData);
-
-    print('User registered successfully with ID: ${newUserDocument.id}');
+  // kondisi password dan confirm password tidak sama
+  if (password != confirmPassword) {
     setState(() {
-      _errorText = 'Pendaftaran Berhasil';
+      _errorText = 'Password and confirm password tidak sama';
     });
+    return;
   }
+
+  // cek apakah username sudah ada atau belum
+  final usersCollection = Firestore.instance.collection('pengguna');
+  final querySnapshot =
+      await usersCollection.where('username', isEqualTo: email).get();
+
+  if (querySnapshot.isNotEmpty) {
+    setState(() {
+      _errorText = 'Username sudah ada';
+    });
+    return;
+  }
+
+  // Add user data to Firestore
+  final userData = {'username': email, 'password': password};
+  final newUserDocument = await usersCollection.add(userData);
+
+  print('User registered successfully with ID: ${newUserDocument.id}');
+  setState(() {
+    _errorText = 'Pendaftaran Berhasil';
+  });
+
+  // Tunggu 0,5 detik
+  await Future.delayed(Duration(milliseconds: 500));
+
+  // Pindah halaman di sini
+  // Contoh: menggunakan Navigator untuk pindah ke halaman lain
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => MyApp()),
+  );
+}
+
 
   String? _errorText;
 

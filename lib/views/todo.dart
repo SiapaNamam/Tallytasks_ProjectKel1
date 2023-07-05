@@ -24,6 +24,7 @@ class _TodoState extends State<Todo> {
   List<Widget> tpChildren = [];
   List<Widget> stpChildren = [];
   String username = '';
+  bool isVisibelButton = true;
 
   String dropdownValue = 'Sangat Penting';
   TextEditingController _nilaiTitleTodo = TextEditingController();
@@ -33,6 +34,17 @@ class _TodoState extends State<Todo> {
     super.initState();
     getUsername();
     getTodo(800, 600);
+    setButton();
+  }
+
+  Future<void> setButton() async {
+    String tanggal = widget.tanggal;
+    DateTime tanggalNow = DateTime.now().subtract(Duration(days: 1));
+    setState(() {
+      if (DateTime.parse(tanggal).isBefore(tanggalNow)) {
+        isVisibelButton = false;
+      }
+    });
   }
 
   Future<void> sendTodo() async {
@@ -317,20 +329,23 @@ class _TodoState extends State<Todo> {
                         },
                       )),
                   //add button
-                  Container(
-                    margin:
-                        EdgeInsets.only(bottom: height / 40, top: height / 40),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          isVisibelForm = !isVisibelForm;
-                          print("visible $isVisibelForm");
-                        });
-                      },
-                      child: Icon(
-                        Icons.add_circle_rounded,
-                        color: Color.fromARGB(255, 158, 158, 158),
-                        size: height / 13,
+                  Visibility(
+                    visible: isVisibelButton,
+                    child: Container(
+                      margin:
+                          EdgeInsets.only(bottom: height / 40, top: height / 40),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            isVisibelForm = !isVisibelForm;
+                            print("visible $isVisibelForm");
+                          });
+                        },
+                        child: Icon(
+                          Icons.add_circle_rounded,
+                          color: Color.fromARGB(255, 158, 158, 158),
+                          size: height / 13,
+                        ),
                       ),
                     ),
                   ),
